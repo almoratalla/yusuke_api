@@ -1,0 +1,30 @@
+{
+    "name": "yusuke",
+    "version": "1.0.0",
+    "description": "An API functions framework",
+    "main": "dist/index.js",
+    "scripts": {
+        "prestart": "npm run build",
+        "build": "tsc",
+        "start": "npm run build && npm run serve",
+        "start:local-gcp": "functions-framework --target=index",
+        "serve": "node dist/index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com/almoratalla/yusuke_api.git"
+    },
+    "author": "Alain Moratalla",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/almoratalla/yusuke_api/issues"
+    },
+    "homepage": "https://github.com/almoratalla/yusuke_api#readme",
+    "dependencies": {
+        "@google-cloud/functions-framework": "^3.4.2",
+        "express": "^4.21.1"
+    },
+    "devDependencies": {
+        "typescript": "^5.7.2"
+    }
+}
