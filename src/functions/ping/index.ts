@@ -1,6 +1,6 @@
-import { FunctionHandler } from "../../types/handler";
+import { UnifiedHandler } from "../../types/platform";
 
-export const pingHandler: FunctionHandler = async (req) => {
+export const pingHandler: UnifiedHandler = async (req) => {
     return {
         status: 200,
         body: { message: "Pong!" },

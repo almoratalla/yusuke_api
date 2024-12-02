@@ -7,7 +7,9 @@
         "prestart": "npm run build",
         "build": "tsc",
         "start": "npm run build && npm run serve",
-        "start:local-gcp": "functions-framework --target=index",
+        "start:local": "npm run build && cross-env NODE_ENV=development PORT=3000 ts-node src/index.ts",
+        "start:ff": "npm run build && cross-env FUNCTIONS_EMULATOR=true functions-framework --target=index",
+        "start:aws": "npm run build && cross-env PLATFORM=awsLambda ts-node src/index.ts",
         "serve": "node dist/index.js"
     },
     "repository": {
@@ -25,6 +27,9 @@
         "express": "^4.21.1"
     },
     "devDependencies": {
+        "@types/aws-lambda": "^8.10.146",
+        "cross-env": "^7.0.3",
+        "ts-node": "^10.9.2",
         "typescript": "^5.7.2"
     }
 }

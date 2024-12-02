@@ -1,36 +1,36 @@
 import express, { Request, Response } from "express";
 import pingHandler from "./functions/ping";
 import pongHandler from "./functions/pong";
+import { adaptFunctionsFrameworkHandler } from "./adapters/functionsFramework";
+import { adaptAwsLambdaHandler } from "./adapters/awsLambda";
+import { UnifiedHandler } from "./types/platform";
+
+const platformAdapters: Record<string, (handler: UnifiedHandler) => any> = {
+    functionsFramework: adaptFunctionsFrameworkHandler,
+    awsLambda: adaptAwsLambdaHandler,
+};
+
+const PLATFORM = process.env.PLATFORM || "functionsFramework";
+const adaptHandler = platformAdapters[PLATFORM];
+
+if (!adaptHandler) {
+    throw new Error(`Unsupported platform: ${PLATFORM}`);
+}
 
 const app = express();
-
-const adaptHandler =
-    (handler: typeof pingHandler) => async (req: Request, res: Response) => {
-        try {
-            const result = await handler({
-                body: req.body,
-                query: req.query,
-                params: req.params,
-                headers: req.headers,
-            });
-            res.status(result.status).send(result.body);
-        } catch (error) {
-            res.status(500).send({
-                error: "Internal Server Error",
-                details: (error as Error).message,
-            });
-        }
-    };
 
 // Routes
 app.use("/ping", adaptHandler(pingHandler));
 app.use("/pong", adaptHandler(pongHandler));
 
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () =>
-    console.log(`Server running on http://localhost:${PORT}`)
-);
+const PORT = process.env.PORT || 3000;
+if (!process.env.FUNCTIONS_EMULATOR && process.env.NODE_ENV !== "production") {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () =>
+        console.log(`Server running on http://localhost:${PORT}`)
+    );
+}
 
-export { app, pingHandler as ping, pongHandler as pong };
+export { app as index, pingHandler, pongHandler };
 
 export default app;
